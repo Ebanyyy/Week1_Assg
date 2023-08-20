@@ -8,7 +8,7 @@ end
 
 
 def setting_items
-	cart = []
+	@cart = []
 end
 
 def item_list
@@ -18,6 +18,15 @@ def item_list
 		"jelly" => 1.50,
 		"juice" => 3
 	}
+end
+
+def voucher_list
+	@voucher = {
+		"FIFTEENOFF" => 0.15,
+		"TWENTYOFF" => 0.2,
+		"THIRTYOFF" => 0.3
+	}
+end
 
 	#Enter items
 def enter_items
@@ -27,50 +36,57 @@ end
 
 
 	#Adding quantity
-def item_quantity(product, quantity = 1)
-	@item_name[product = quantity]
+def item_quantity(item_list)
 	puts "Enter quantity:"
-	item_quantity = gets.chomp.to_i 
-	cart << { name: @item_name, quantity: item_quantity}
-	puts "#{item_quantity} #{@item_name} has been added"
+	quantity = gets.chomp.to_i 
+	@cart << { name: @item_name, amount: quantity}
+	puts "#{quantity} #{@item_name} has been added"
 end
 
 
 	#Adding voucher
-def discount_voucher(discount)
-	puts "Enter total price:" 
-	total = gets.chomp.to_i
-	puts "Enter discount off:"
-	discount = gets.chomp.to_i
-	after_discount = total - (total * discount / 100)
-	puts "Your final price is: #{afterDiscount}"
-end
-
-
-	#Total price
-def total(product)
-	@item_name.each do |product, quantity|
-	 total += @price_list * item_quantity 
-end
-
-
-	#Shopping cart
-def cart_display(cart)
-	puts "Your items:"
-	cart.each do |product| 
-		puts "#{@item_name} - RM#{@price_list} (Quantity: #{item_quantity}) "
+def discount_voucher
+	loop do 
+		puts "Please key in your voucher code or type 'none' to skip:"
+		@vou_code = gets.chomp.upcase
+		@valid_vou = 0
+		break if @vou_code == "none"
+		if @voucher.has_key?(: "#{@vou_code}") 
+				@valid_vou = @voucher[:"#{@vou_code}"]
+				puts "#{@valid_vou*100}% off have been entered"
+				return @valid_vou
+		else
+				puts "Invalid code"
+		end
 	end
 end
 
-	#continue shopping
 def continue
 	puts "Do you want to add more? (yes/no)"
 	to_continue = gets.chomp.downcase
 end
 
+
+
+def calc_price_off(price, vou_code)
+	discount = @voucher[vou_code]
+	off_price = @price_list * (1 - discount)
+	return off_price
+end
+end
+
+	#Shopping cart
+def cart_display(cart)
+	puts "Your items:"
+	cart.each do |product| 
+		puts "#{@item_name} - RM#{@price_list} (quantity: #{quantity}) "
+	end
+end
+
+
 	#Total price calc
 def total_calc (product)
-	calc = @item_name.reduce(0) { |sum, product| sum + @price_list * item_quantity }		#calc add at the end
+	calc = @item_name.reduce(0) { |sum, product| sum + @price_list * quantity }		
 end
 
 
@@ -88,14 +104,14 @@ customer_id
 setting_items
 loop do 
 	item_list
+	voucher_list
 	enter_items
-	item_quantity
+	item_quantity(item_list)
 	if @item_name == "done"
 		break
 	end
-
 	discount_voucher
-	total(item_name)
+	total(@item_name)
 	cart_display
 	continue
 	if to_continue == "no"
@@ -104,37 +120,9 @@ loop do
 
 	total_calc
 	transaction
-	end
 end
 
 
-
-
-
-
-end
-
-# Leave this here.
-#run
-
-
-				# iterate the hash, 
-				# get the key, 
-				# then check the list of items,
-				# take the price, and multiply quantity.
-				# Only interger and float
-				# setting # first must define the settings.
-				#run program
-#	puts customer_info
-#	puts @items_price
-#	print "Enter an item to verify price: "
-#	item = gets.chomp
-#	puts "This #{item}'s cost: #{@items_price[item]}"
-
-		#Item price (not sure)
-#def items_price
-#		puts "Enter price:" 
-#		input = gets.chomp
 
 #			begin
 #				price = Float(input)
